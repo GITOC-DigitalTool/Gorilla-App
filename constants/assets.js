@@ -7,6 +7,7 @@ import birth from "../assets/icons/birth.png";
 import calendar from "../assets/icons/calendar.png";
 import location from "../assets/icons/location.png";
 import sex from "../assets/icons/sex.png";
+import login from "../assets/icons/login.png";
 
 import logo from "../assets/images/logo.png";
 import nft01 from "../assets/images/nft01.png";
@@ -32,6 +33,7 @@ export default {
   calendar,
   location,
   sex,
+  login,
 
   logo,
   nft01,

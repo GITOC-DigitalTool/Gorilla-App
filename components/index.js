@@ -11,6 +11,8 @@ import Candidates from "./Candidates";
 import CandidateCard from "./CandidateCard";
 import EditDetailsForm from "./EditDetailsForm";
 import FloatingLabelInput from "./FloatingLabelInput";
+import AddImageToGorilla from "./AddImageToGorilla";
+import AddIndividual from "./AddIndividual";
 
 export {
   HomeHeader,
@@ -27,4 +29,6 @@ export {
   CandidateCard,
   EditDetailsForm,
   FloatingLabelInput,
+  AddImageToGorilla,
+  AddIndividual,
 };

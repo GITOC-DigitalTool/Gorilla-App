@@ -27,13 +27,15 @@ function toBBox(values, threshold, width, height) {
       scores.push(values[i * column_width + 4]);
     }
   }
+  if (bboxes.length == 0) {
+    return { boxes: [], detection_scores: [] };
+  }
   const boxes = tf.tensor2d(bboxes);
   const detection_scores = tf.tensor1d(scores);
   return { boxes, detection_scores };
 }
 
 const imageToTensor = (rawImageData) => {
-  // console.log("here!");
   const { width, height, data } = jpeg.decode(rawImageData, {
     useTArray: true,
   });
@@ -55,7 +57,6 @@ const imageToTensor = (rawImageData) => {
 const encodeJpeg = async (tensor) => {
   const height = tensor.shape[0];
   const width = tensor.shape[1];
-  // console.log(height, width);
   const data = Buffer.from(
     // concat with an extra alpha channel and slice up to 4 channels to handle 3 and 4 channels tensors
     tf
@@ -100,7 +101,6 @@ export const cropImage = async (source, boundingBox, originalSize, newSize) => {
   );
 
   const k = await encodeJpeg(tf.squeeze(imageTensor1).mul(255));
-  // console.log("done cropping", k);
   return { uri: k["uri"] };
 };
 
@@ -110,9 +110,16 @@ export const detectObjectsAsync = async (detectorModel, source, bbFn) => {
     const response = await fetch(imageAssetPath.uri, {}, { isBinary: true });
     const rawImageData = await response.arrayBuffer();
     const imageTensor = imageToTensor(rawImageData).div(255.0).expandDims(0);
+
     const outputTensor = await tf.squeeze(detectorModel.predict(imageTensor));
     const outputValues = outputTensor.dataSync();
+
     const detection_results = toBBox(outputValues, 0.3, 640, 640);
+    if (detection_results["boxes"].length == 0) {
+      bbFn(detection_results["boxes"]);
+      return;
+    }
+
     const res = await tf.image.nonMaxSuppressionAsync(
       detection_results["boxes"],
       detection_results["detection_scores"],
@@ -122,9 +129,6 @@ export const detectObjectsAsync = async (detectorModel, source, bbFn) => {
     );
     const result = res.dataSync();
     const box = detection_results["boxes"].arraySync()[result];
-
-    // console.log("=== Detect objects predictions: ===");
-    // console.log(box);
 
     const xywh_box = [
       box[0] - box[2] / 2,

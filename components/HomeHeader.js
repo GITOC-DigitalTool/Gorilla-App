@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Text, View, Image, TextInput } from "react-native";
+import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 
-const HomeHeader = ({ onSearch }) => {
+const HomeHeader = ({ onSearch, userInfo, loginFn }) => {
   return (
     <View
       style={{
@@ -24,12 +24,22 @@ const HomeHeader = ({ onSearch }) => {
           style={{ width: 200, height: 32 }}
         />
         <View style={{ width: 45, height: 45 }}>
-          <Image
-            source={assets.person01}
-            resizeMode="contain"
-            style={{ width: "100%", height: "100%" }}
-          />
-          <Image
+          {userInfo ? (
+            <Image
+              source={{ url: userInfo.picture }}
+              resizeMode="contain"
+              style={{ width: "100%", height: "100%", borderRadius: 40 }}
+            />
+          ) : (
+            <TouchableOpacity onPress={() => loginFn()}>
+              <Image
+                source={assets.login}
+                resizeMode="contain"
+                style={{ width: "100%", height: "100%" }}
+              />
+            </TouchableOpacity>
+          )}
+          {/* <Image
             source={assets.badge}
             resizeMode="contain"
             style={{
@@ -39,20 +49,34 @@ const HomeHeader = ({ onSearch }) => {
               bottom: 0,
               right: 0,
             }}
-          />
+          /> */}
         </View>
       </View>
       <View style={{ marginVertical: SIZES.font }}>
-        <Text
-          style={{
-            fontFamily: FONTS.regular,
-            fontSize: SIZES.small,
-            color: COLORS.white,
-          }}
-        >
-          Hello, Louise 👋
-        </Text>
-        <Text
+        {userInfo ? (
+          <Text
+            style={{
+              fontFamily: FONTS.bold,
+              fontSize: SIZES.large,
+              color: COLORS.white,
+              marginTop: SIZES.base / 2,
+            }}
+          >
+            Hello, {userInfo.given_name} 👋
+          </Text>
+        ) : (
+          <Text
+            style={{
+              fontFamily: FONTS.bold,
+              fontSize: SIZES.large,
+              color: COLORS.white,
+              marginTop: SIZES.base / 2,
+            }}
+          >
+            Tap top right button to log in 🚀
+          </Text>
+        )}
+        {/* <Text
           style={{
             fontFamily: FONTS.bold,
             fontSize: SIZES.large,
@@ -60,8 +84,8 @@ const HomeHeader = ({ onSearch }) => {
             marginTop: SIZES.base / 2,
           }}
         >
-          Let's find a gorilla 🦍
-        </Text>
+          
+        </Text> */}
       </View>
 
       <View style={{ marginTop: SIZES.font }}>
@@ -82,8 +106,13 @@ const HomeHeader = ({ onSearch }) => {
             style={{ width: 20, height: 20, marginRight: SIZES.base }}
           />
           <TextInput
-            placeholder="Search Gorilla"
-            style={{ flex: 1 }}
+            placeholder="Let's find a gorilla 🦍"
+            placeholderTextColor="#ccc"
+            style={{
+              flex: 1,
+              fontSize: SIZES.large,
+              color: COLORS.white,
+            }}
             onChangeText={onSearch}
           />
         </View>

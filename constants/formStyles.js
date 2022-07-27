@@ -1,6 +1,6 @@
 export const FormStyles = {
   TextInput: {
-    fontSize: 18,
-    marginBottom: 18,
+    fontSize: 12,
+    marginBottom: -10,
   },
 };

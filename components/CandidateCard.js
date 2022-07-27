@@ -17,55 +17,71 @@ const ListItem = ({ item }) => {
         }}
         resizeMode="cover"
       />
-      {/* <Text style={styles.itemText}>{item.text}</Text> */}
     </View>
   );
 };
 
 const CandidateCard = ({ data }) => {
-  const imageSize = 80;
-  const maxToShow = 10;
+  const navigation = useNavigation();
   return (
     <View
       style={{
         backgroundColor: COLORS.white,
         borderRadius: SIZES.font,
-        marginBottom: SIZES.font,
+        marginBottom: SIZES.extraLarge,
         margin: SIZES.base,
-        ...SHADOWS.medium,
-        justifyContent: "center",
-        alignItems: "center",
+        ...SHADOWS.dark,
       }}
     >
-      <FlatList
-        horizontal
-        data={data.thumbnail.slice(0, maxToShow)}
-        renderItem={({ item }) => (
-          <>
-            {console.log(item.url)}
-            <Image
-              source={{ uri: item.url }}
-              resizeMode="cover"
-              style={{
-                width: imageSize,
-                height: imageSize,
-                margin: SIZES.base / 8,
-                borderRadius: SIZES.font,
-              }}
-            />
-          </>
-        )}
-      />
-      <Text
+      <View
         style={{
-          fontFamily: FONTS.semiBold,
-          fontSize: SIZES.large,
-          color: COLORS.primary,
-          margin: SIZES.base,
+          width: "100%",
+          height: 150,
+          flexDirection: "row",
+          justifyContent: "space-between",
         }}
       >
-        {data.name}
-      </Text>
+        <Image
+          source={{ uri: data.thumbnail.at(0).url }}
+          resizeMode="cover"
+          style={{
+            width: "100%",
+            height: "100%",
+            borderTopLeftRadius: SIZES.font,
+            borderTopRightRadius: SIZES.font,
+          }}
+        />
+      </View>
+      <View style={{ width: "100%", padding: SIZES.font }}>
+        <Title
+          title={data.name}
+          specie={data.specie}
+          subTitle={data.created_by}
+          titleSize={SIZES.large}
+          specieSize={SIZES.font}
+          subTitleSize={SIZES.small}
+        />
+        <View
+          style={{
+            marginTop: SIZES.font,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <EthPrice sex={data.sex} />
+
+          <RectButton
+            text={"Learn More"}
+            minWidth={120}
+            fontSize={SIZES.font}
+            backgroundColor={COLORS.primary}
+            handlePress={() =>
+              navigation.navigate("Details", { data, back: "Search" })
+            }
+          />
+        </View>
+      </View>
     </View>
   );
 };

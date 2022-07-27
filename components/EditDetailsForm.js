@@ -9,7 +9,7 @@ import React from "react";
 
 import { Formik } from "formik";
 import { FloatingLabelInput, RectButton } from "../components";
-import { SIZES, SHADOWS } from "../constants";
+import { SIZES, SHADOWS, COLORS } from "../constants";
 
 import { useDatasetUpdateContext } from "../utils/DatasetContext";
 
@@ -47,14 +47,7 @@ const EditDetailsForm = ({ data, updatingFn }) => {
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        // onSubmit={(values, {}) => {
-        //   console.log(values, props);
-
-        //   //   updateDatabase({ docName: values.name, valuesToUpdate: values });
-        // }}
         onSubmit={async (values) => {
-          //   console.log({ new: values, original: initialValues });
-
           const docName = values.name;
           const valuesToUpdate = Object.entries(values).reduce(
             (acc, [key, value]) => {
@@ -66,13 +59,9 @@ const EditDetailsForm = ({ data, updatingFn }) => {
             },
             {}
           );
-          if (Object.keys(valuesToUpdate).length === 0) {
-            console.log("NOTHING TO UPDATE");
-          } else {
+          if (Object.keys(valuesToUpdate).length > 0) {
             updatingFn(true);
             await updateDatabase({ docName, valuesToUpdate });
-            // console.log("Done updating!!!!!");
-            // updatingFn(false);
           }
         }}
       >
@@ -133,6 +122,7 @@ const EditDetailsForm = ({ data, updatingFn }) => {
                 minWidth={170}
                 fontSize={SIZES.large}
                 marginTop={20}
+                backgroundColor={COLORS.primary}
                 handlePress={props.handleSubmit}
               />
             </KeyboardAvoidingView>

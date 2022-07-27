@@ -1,21 +1,22 @@
-import {View, Text, Image} from 'react-native';
-import React, {useState} from 'react';
+import { View, Text, Image } from "react-native";
+import React, { useState } from "react";
 
-import {EthPrice, Title} from './SubInfo';
-import {COLORS, SIZES, FONTS, assets} from '../constants';
+import { EthPrice, Title } from "./SubInfo";
+import { COLORS, SIZES, FONTS, assets } from "../constants";
 
-const DetailsDescription = ({data}) => {
+const DetailsDescription = ({ data }) => {
   const [text, setText] = useState(data.comment.slice(0, 100));
   const [readMore, setReadMore] = useState(false);
   return (
     <>
       <View
         style={{
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Title
           title={data.name}
           specie={data.specie}
@@ -26,30 +27,32 @@ const DetailsDescription = ({data}) => {
         />
         <EthPrice sex={data.sex} />
       </View>
-      <View style={{marginVertical: SIZES.extraLarge * 1.5}}>
+      <View style={{ marginVertical: SIZES.extraLarge * 2.5 }}>
         <Text
           style={{
             fontSize: SIZES.font,
             fontFamily: FONTS.semiBold,
-            colors: COLORS.primary,
-          }}>
+            color: COLORS.primary,
+          }}
+        >
           Description
         </Text>
-        <View style={{marginTop: SIZES.base}}>
+        <View style={{ marginTop: SIZES.base }}>
           <Text
             style={{
               fontSize: SIZES.small,
               fontFamily: FONTS.regular,
-              colors: COLORS.secondary,
+              color: COLORS.secondary,
               lineHeight: SIZES.large,
-            }}>
+            }}
+          >
             {text}
-            {!readMore && '...'}
+            {!readMore && "..."}
             <Text
               style={{
                 fontSize: SIZES.small,
                 fontFamily: FONTS.semiBold,
-                colors: COLORS.primary,
+                color: COLORS.primary,
               }}
               onPress={() => {
                 if (!readMore) {
@@ -59,38 +62,42 @@ const DetailsDescription = ({data}) => {
                   setText(data.comment.slice(0, 100));
                   setReadMore(false);
                 }
-              }}>
-              {readMore ? ' Show Less ' : ' Read More '}
+              }}
+            >
+              {readMore ? " Show Less " : " Read More "}
             </Text>
           </Text>
         </View>
       </View>
       <View
         style={{
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginVertical: SIZES.base,
           paddingHorizontal: SIZES.base * 2,
-        }}>
+        }}
+      >
         <Text
           style={{
             fontFamily: FONTS.bold,
             fontSize: FONTS.small,
             color: COLORS.primary,
-          }}>
+          }}
+        >
           Birth
         </Text>
         <View
           style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
             marginVertical: SIZES.base,
             paddingHorizontal: SIZES.base * 5,
-          }}>
+          }}
+        >
           <Image
             source={assets.calendar}
             resizeMode="contain"
@@ -104,7 +111,8 @@ const DetailsDescription = ({data}) => {
               fontFamily: FONTS.semiBold,
               fontSize: FONTS.small,
               color: COLORS.primary,
-            }}>
+            }}
+          >
             {data.dob}
           </Text>
           <Image
@@ -120,39 +128,43 @@ const DetailsDescription = ({data}) => {
               fontFamily: FONTS.semiBold,
               fontSize: FONTS.small,
               color: COLORS.primary,
-            }}>
+            }}
+          >
             {data.pob}
           </Text>
         </View>
       </View>
       <View
         style={{
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginVertical: SIZES.base,
           paddingHorizontal: SIZES.base * 2,
-        }}>
+        }}
+      >
         <Text
           style={{
             fontFamily: FONTS.bold,
             fontSize: FONTS.small,
             color: COLORS.primary,
-          }}>
+          }}
+        >
           Facility
         </Text>
         <View
           style={{
             // right: '40%',
             flex: 1,
-            width: '10%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            width: "10%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
             marginVertical: SIZES.base,
             paddingHorizontal: SIZES.base * 2,
-          }}>
+          }}
+        >
           <Image
             source={assets.location}
             resizeMode="contain"

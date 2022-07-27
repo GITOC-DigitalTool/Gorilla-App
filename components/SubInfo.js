@@ -17,6 +17,7 @@ export const Title = ({
           fontFamily: FONTS.semiBold,
           fontSize: titleSize,
           color: COLORS.primary,
+          marginBottom: SIZES.font,
         }}
       >
         {title}
@@ -45,7 +46,13 @@ export const Title = ({
 
 export const EthPrice = ({ sex }) => {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: SIZES.font,
+      }}
+    >
       <Image
         source={assets.sex}
         resizeMode="contain"
@@ -141,8 +148,8 @@ export const SubInfo = () => {
         justifyContent: "space-between",
       }}
     >
-      <People />
-      <EndDate />
+      {/* <People />  */}
+      {/* <EndDate /> */}
     </View>
   );
 };

@@ -4,8 +4,8 @@ import { FormStyles, COLORS } from "../constants";
 
 const defaultStyles = {
   labelStyle: {
-    position: "absolute",
-    left: 0,
+    // position: "absolute",
+    // left: 0,
   },
   textInput: {
     height: 30,
@@ -50,11 +50,11 @@ class FloatingLabelInput extends Component {
     const animatedLabelStyle = {
       top: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [18, 0],
+        outputRange: [16, 0],
       }),
       fontSize: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [18, 12],
+        outputRange: [16, 12],
       }),
       color: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
@@ -62,7 +62,7 @@ class FloatingLabelInput extends Component {
       }),
     };
     return (
-      <View style={{ paddingTop: 18 }}>
+      <View style={{ paddingTop: 8 }}>
         <Animated.Text style={[style.labelStyle, animatedLabelStyle]}>
           {label}
         </Animated.Text>

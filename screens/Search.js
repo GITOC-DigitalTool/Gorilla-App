@@ -1,14 +1,29 @@
-import { View, Text, SafeAreaView, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ActivityIndicator,
+  Button,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 
-import { COLORS, MAX_CANDIDATES } from "../constants";
+import { COLORS, MAX_CANDIDATES, SIZES } from "../constants";
 import { useInferenceContext } from "../utils/InferenceContext";
-import { useDatasetContext } from "../utils/DatasetContext";
-import { FocusedStatusBar, ImagePickerCard, Candidates } from "../components";
+import {
+  useDatasetContext,
+  useAuthenticationContext,
+  useUserInfoContext,
+} from "../utils/DatasetContext";
+import {
+  FocusedStatusBar,
+  ImagePickerCard,
+  Candidates,
+  RectButton,
+} from "../components";
 
 import { decode as atob, encode as btoa } from "base-64";
 
-import { matchObjectsAsync } from "../utils/Recognition";
+import { matchObjectsAsync, getFeatureAsync } from "../utils/Recognition";
 
 function _base64ToArrayBuffer(base64) {
   var binary_string = atob(base64);
@@ -36,12 +51,25 @@ function _Float32ArrayToBase64String(fAry) {
 
 const Search = () => {
   const { gorillaData } = useDatasetContext();
+  const { userInfo } = useUserInfoContext();
   const [galleryFeatures, setGalleryFeatures] = useState([]);
+  const [pickedImage, setPickedImage] = useState(null);
   const [cropped, setCropped] = useState(null);
   const [candidates, setCandidates] = useState(null);
+  const [imageFeature, setImageFeature] = useState(null);
   const [displaySize, setDisplaySize] = useState(320);
+  const [doRestart, setDoRestart] = useState(false);
 
   const { isModelReady, recognitionModel } = useInferenceContext();
+
+  const restart = () => {
+    setDoRestart(true);
+    setPickedImage(null);
+    setCropped(null);
+    setCandidates(null);
+    setImageFeature(null);
+    setDisplaySize(320);
+  };
 
   useEffect(() => {
     if (gorillaData) {
@@ -49,11 +77,13 @@ const Search = () => {
         let k = [];
         await gorillaData.reduce(async (promise, item) => {
           await promise;
-          k.push(_base64ToArrayBuffer(item.feature));
+          k.push(_base64ToArrayBuffer(item.feature).slice(0, 512));
         }, Promise.resolve());
         return k;
       }
-      getGalleryFeatures().then((features) => setGalleryFeatures(features));
+      getGalleryFeatures().then((features) => {
+        setGalleryFeatures(features);
+      });
     }
   }, [gorillaData]);
 
@@ -64,44 +94,93 @@ const Search = () => {
 
   useEffect(() => {
     if (isModelReady && galleryFeatures && cropped) {
-      matchObjectsAsync(recognitionModel, cropped, galleryFeatures).then(
-        (scores) => {
+      getFeatureAsync(recognitionModel, cropped).then((queryFeature) => {
+        setImageFeature(_Float32ArrayToBase64String(queryFeature));
+        matchObjectsAsync(queryFeature, galleryFeatures).then((scores) => {
           let sortedIdx = argsort(scores);
-          console.log(scores.length);
           let candidates = sortedIdx.map((i) => ({ score: scores[i], idx: i }));
           setCandidates(candidates);
-        }
-      );
+        });
+      });
     }
   }, [cropped]);
 
   return (
-    <SafeAreaView>
-      <FocusedStatusBar backgroundColor={COLORS.primary} />
-      <View
-        style={{
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ImagePickerCard
-          text={"Pick image"}
-          croppedImageFn={setCropped}
-          displaySize={displaySize}
-        />
-        {!isModelReady && <ActivityIndicator size="small" />}
-        {candidates && (
-          <Candidates
-            candidates={candidates}
-            data={gorillaData}
-            setDisplaySize={setDisplaySize}
+    <View style={{ flex: 1 }}>
+      <FocusedStatusBar
+        backgroundColor={COLORS.primary}
+        barStyle="light-content"
+      />
+      {!isModelReady ? (
+        <View
+          style={{
+            flexDirection: "column",
+            justifyContent: "center",
+            alignContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Text
+            style={{
+              color: "black",
+              fontSize: SIZES.large,
+              marginBottom: SIZES.font,
+            }}
+          >
+            Models are loading...
+          </Text>
+          <Text
+            style={{
+              color: "gray",
+              fontSize: SIZES.medium,
+              marginBottom: SIZES.extraLarge,
+            }}
+          >
+            Please wait for a few seconds.
+          </Text>
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View
+          style={{
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+            alignItems: "center",
+          }}
+        >
+          {cropped && (
+            <RectButton
+              text={"Search Again"}
+              minWidth={170}
+              fontSize={SIZES.large}
+              marginTop={SIZES.extraLarge}
+              backgroundColor={COLORS.primary}
+              handlePress={restart}
+            />
+          )}
+          <ImagePickerCard
+            text={"Pick image"}
+            croppedImageFn={setCropped}
+            displaySize={displaySize}
+            restart={doRestart}
+            restartFn={setDoRestart}
           />
-        )}
-      </View>
-    </SafeAreaView>
+
+          {candidates && (
+            <Candidates
+              userInfo={userInfo}
+              feature={imageFeature}
+              cropped={cropped}
+              candidates={candidates}
+              data={gorillaData}
+              setDisplaySize={setDisplaySize}
+            />
+          )}
+        </View>
+      )}
+    </View>
   );
 };
 

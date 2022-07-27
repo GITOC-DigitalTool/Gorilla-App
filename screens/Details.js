@@ -21,36 +21,69 @@ import {
   DetailsBid,
   EditDetailsForm,
 } from "../components";
+import {
+  useUserInfoContext,
+  useAuthenticationContext,
+} from "../utils/DatasetContext";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { FlatGrid } from "react-native-super-grid";
 
 const DetailsHeader = ({ data, navigation, galleryFn }) => (
-  <View style={{ width: "100%", height: 373 }}>
+  <View style={{ width: "100%", height: 200 }}>
     <TouchableHighlight
       onPress={() => {
         galleryFn(true);
       }}
     >
-      <Image
-        source={{ uri: data.thumbnail.at(0).url }}
-        resizeMode="cover"
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      />
+      <>
+        <Image
+          source={{ uri: data.thumbnail.at(0).url }}
+          resizeMode="cover"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              padding: SIZES.font,
+              backgroundColor: "rgba(255, 255, 255, 0.4)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: SIZES.large,
+                color: COLORS.white,
+                fontFamily: FONTS.semiBold,
+              }}
+            >
+              Show more images of {data.name}
+            </Text>
+          </View>
+        </View>
+      </>
     </TouchableHighlight>
     <CircleButton
       imgUrl={assets.left}
       handlePress={() => navigation.goBack()}
       left={15}
-      top={StatusBar.currentHeight + 10}
-    />
-    <CircleButton
-      imgUrl={assets.heart}
-      right={15}
       top={StatusBar.currentHeight + 10}
     />
   </View>
@@ -62,12 +95,14 @@ const Details = ({ route, navigation }) => {
   const [updating, setUpdating] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
 
+  const { userInfo } = useUserInfoContext();
+  const loginFn = useAuthenticationContext();
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <FocusedStatusBar
-        barStyle="dark-content"
-        backgroundColor="transparent"
-        translucent={true}
+        backgroundColor={COLORS.primary}
+        barStyle="light-content"
       />
       <View
         style={{
@@ -146,8 +181,6 @@ const Details = ({ route, navigation }) => {
                 )}
                 style={{ marginBottom: 50 }}
               />
-
-              {/* {console.log(data.thumbnail.map((t) => t.url))} */}
             </View>
           </SafeAreaView>
         </Modal>
@@ -202,14 +235,25 @@ const Details = ({ route, navigation }) => {
             </View>
           </SafeAreaView>
         </Modal>
-
-        <RectButton
-          text={"Edit"}
-          minWidth={170}
-          fontSize={SIZES.large}
-          {...SHADOWS.dark}
-          handlePress={() => setModalVisible(true)}
-        />
+        {!userInfo ? (
+          <RectButton
+            text={"Log In To Edit"}
+            minWidth={170}
+            fontSize={SIZES.large}
+            backgroundColor={COLORS.gray}
+            {...SHADOWS.dark}
+            handlePress={() => loginFn()}
+          />
+        ) : (
+          <RectButton
+            text={"Edit"}
+            minWidth={170}
+            fontSize={SIZES.large}
+            backgroundColor={COLORS.primary}
+            {...SHADOWS.dark}
+            handlePress={() => setModalVisible(true)}
+          />
+        )}
       </View>
       <FlatList
         data={data.bids}
@@ -224,14 +268,13 @@ const Details = ({ route, navigation }) => {
               navigation={navigation}
               galleryFn={setShowGallery}
             />
-            <SubInfo />
             <View style={{ padding: SIZES.font }}>
               <DetailsDescription data={data} />
             </View>
           </React.Fragment>
         )}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

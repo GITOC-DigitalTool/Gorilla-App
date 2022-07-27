@@ -17,6 +17,9 @@ const ImagePickerCard = ({
   pickedImageFn,
   pickedImage,
   croppedImageFn,
+  restart,
+  restartFn,
+  runningFn,
 }) => {
   const borderColors = ["blue", "green", "orange", "pink", "purple"];
   let scalingFactor = displaySize / 640;
@@ -43,6 +46,15 @@ const ImagePickerCard = ({
     getPermissionAsync();
   }, []);
 
+  useEffect(() => {
+    if (restart) {
+      pickedImageFn(null);
+      croppedImageFn(null);
+      boundingBoxFn(null);
+      restartFn(false);
+    }
+  }, [restart]);
+
   const selectImageAsync = async () => {
     try {
       let response = await ImagePicker.launchImageLibraryAsync({
@@ -59,6 +71,10 @@ const ImagePickerCard = ({
         );
         const source = { uri: manipResponse.uri };
         pickedImageFn(source);
+        if (runningFn) runningFn(true);
+        if (boundingBox) {
+          boundingBoxFn(null);
+        }
         await detectObjectsAsync(detectorModel, source, boundingBoxFn);
       }
     } catch (error) {
@@ -67,7 +83,7 @@ const ImagePickerCard = ({
   };
 
   useEffect(() => {
-    if (pickedImage) {
+    if (pickedImage && boundingBox && boundingBox.length > 0) {
       cropImage(pickedImage, boundingBox, 640, 160).then((img) => {
         croppedImageFn(img);
       });
@@ -85,36 +101,61 @@ const ImagePickerCard = ({
         alignItems: "center",
         backgroundColor: COLORS.white,
         borderRadius: SIZES.font,
-        marginBottom: SIZES.extraLarge,
         margin: SIZES.base,
+        marginBottom: SIZES.medium,
         ...SHADOWS.light,
       }}
     >
-      <Image
-        resizeMode="cover"
-        style={{
-          width: "100%",
-          height: "100%",
-          borderRadius: SIZES.font,
-          opacity: 0.9,
-        }}
-        source={pickedImage}
-      />
-      {boundingBox && (
-        <View
+      {pickedImage && (
+        <Image
+          resizeMode="cover"
           style={{
-            position: "absolute",
-            left: boundingBox[0] * scalingFactor,
-            top: boundingBox[1] * scalingFactor,
-            width: boundingBox[2] * scalingFactor,
-            height: boundingBox[3] * scalingFactor,
-            borderWidth: 2,
-            borderRadius: 4,
-            borderColor: borderColors[0],
-            zIndex: 2000,
+            width: "100%",
+            height: "100%",
+            borderRadius: SIZES.font,
+            opacity: 0.9,
           }}
+          source={pickedImage}
         />
       )}
+      {boundingBox &&
+        (boundingBox.length > 0 ? (
+          <View
+            style={{
+              position: "absolute",
+              left: boundingBox[0] * scalingFactor,
+              top: boundingBox[1] * scalingFactor,
+              width: boundingBox[2] * scalingFactor,
+              height: boundingBox[3] * scalingFactor,
+              borderWidth: 2,
+              borderRadius: 4,
+              borderColor: borderColors[0],
+              zIndex: 2000,
+            }}
+          />
+        ) : (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: SIZES.extraLarge,
+                fontFamily: FONTS.bold,
+                color: COLORS.red,
+                textAlign: "center",
+                marginBottom: SIZES.large,
+                marginTop: SIZES.large,
+              }}
+            >
+              No gorilla face detected
+            </Text>
+          </View>
+        ))}
 
       <View
         style={{

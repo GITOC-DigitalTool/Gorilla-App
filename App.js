@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 
+import { RootSiblingParent } from "react-native-root-siblings";
+
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
 import Home from "./screens/Home";
 import Details from "./screens/Details";
 import Verify from "./screens/Verify";
@@ -40,47 +41,49 @@ const HomeStackScreen = () => (
 
 const App = () => {
   return (
-    <DatasetProvider>
-      <InferenceProvider>
-        <NavigationContainer theme={theme}>
-          <Tab.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Home"
-          >
-            <Tab.Screen
-              name="Verify"
-              component={Verify}
-              options={{
-                tabBarLabel: "Verify",
-                tabBarIcon: ({ size, color }) => (
-                  <Ionicons name="checkmark-done" color={color} size={size} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Home"
-              component={HomeStackScreen}
-              options={{
-                tabBarLabel: "Home",
-                tabBarIcon: ({ size, color }) => (
-                  <Ionicons name="home" color={color} size={size} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Search"
-              component={Search}
-              options={{
-                tabBarLabel: "Search",
-                tabBarIcon: ({ size, color }) => (
-                  <Ionicons name="search" color={color} size={size} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </InferenceProvider>
-    </DatasetProvider>
+    <RootSiblingParent>
+      <DatasetProvider>
+        <InferenceProvider>
+          <NavigationContainer theme={theme}>
+            <Tab.Navigator
+              screenOptions={{ headerShown: false }}
+              initialRouteName="Home"
+            >
+              <Tab.Screen
+                name="Verify"
+                component={Verify}
+                options={{
+                  tabBarLabel: "Verify",
+                  tabBarIcon: ({ size, color }) => (
+                    <Ionicons name="checkmark-done" color={color} size={size} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Home"
+                component={HomeStackScreen}
+                options={{
+                  tabBarLabel: "Home",
+                  tabBarIcon: ({ size, color }) => (
+                    <Ionicons name="home" color={color} size={size} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Search"
+                component={Search}
+                options={{
+                  tabBarLabel: "Search",
+                  tabBarIcon: ({ size, color }) => (
+                    <Ionicons name="search" color={color} size={size} />
+                  ),
+                }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </InferenceProvider>
+      </DatasetProvider>
+    </RootSiblingParent>
   );
 };
 

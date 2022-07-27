@@ -40,14 +40,12 @@ export const InferenceProvider = ({ children }) => {
           .loadGraphModel(bundleResourceIO(detectorJSON, detectorWeights))
           .catch((e) => console.log(e))
       );
-      console.log("Detector loaded!");
 
       setRecognitionModel(
         await tf
           .loadGraphModel(bundleResourceIO(recognitionJSON, recognitionWeights))
           .catch((e) => console.log(e))
       );
-      console.log("Feature Extractor loaded!");
 
       setIsModelReady(true);
     };

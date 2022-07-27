@@ -8,7 +8,6 @@ import * as jpeg from "jpeg-js";
 import { Image } from "react-native";
 
 const imageToTensor = (rawImageData) => {
-  // console.log("here!");
   const { width, height, data } = jpeg.decode(rawImageData, {
     useTArray: true,
   });
@@ -74,7 +73,6 @@ export const cropImage = async (source, boundingBox, originalSize, newSize) => {
   );
 
   const k = await encodeJpeg(tf.squeeze(imageTensor1).mul(255));
-  // console.log("done cropping", k);
   return { uri: k["uri"] };
 };
 
@@ -106,7 +104,6 @@ function cosineSimilarity(A, B) {
   }
   mA = Math.sqrt(mA);
   mB = Math.sqrt(mB);
-  // console.log(mA * mA, mB * mB);
   var similarity = dotproduct / (mA * mB);
   return similarity;
 }
@@ -119,30 +116,28 @@ export const verifyObjectsAsync = async (
   try {
     const feature1 = await infer(recognitionModel, source1);
     const feature2 = await infer(recognitionModel, source2);
-    // console.log(feature1.length, feature2.length);
     return cosineSimilarity(feature1, feature2);
   } catch (error) {
     console.log("Exception Error: ", error);
   }
 };
 
-export const matchObjectsAsync = async (
-  recognitionModel,
-  source,
-  galleryFeatures
-) => {
+export const getFeatureAsync = async (recognitionModel, source) => {
   try {
     const queryFeature = await infer(recognitionModel, source);
-    // console.log(queryFeature.length, galleryFeatures[0].length);
+    return queryFeature;
+  } catch (error) {
+    console.log("Error extracting feature: ", error);
+  }
+};
+
+export const matchObjectsAsync = async (queryFeature, galleryFeatures) => {
+  try {
     var scores = [];
     galleryFeatures.forEach((feature) => {
       var score = cosineSimilarity(feature, queryFeature);
       scores.push(score);
     });
-    // var scores = [cosineSimilarity(galleryFeatures[0], queryFeature)];
-    // console.log("=== Query ===");
-    // console.log(queryFeature);
-    // console.log("score : ", scores);
     return scores;
   } catch (error) {
     console.log("Exception Error: ", error);
