@@ -27,6 +27,11 @@ Gorilla face detection and recognition using React Native.
   - Android: [Client Android](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=blankexample)
   - Web: Any web browser on [localhost or through HTTPS](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts)
 
+## Acknowledgement
+This work was conducted by [LENS, Inc.](https://lenscorp.ai) in collaboration with [Global Initiative Against Transnational Organized Crime](https://globalinitiative.net)
+to bring forward a non-invasive, rapid, and robust method of automatic 
+gorilla individual identification. 
+
 ## Issues
 - Contact Debayan Deb <debayan@lenscorp.ai> for any technical issues.
 
