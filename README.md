@@ -45,3 +45,7 @@ booktitle   = {GitHub},
 year      = {2022},
 }
 ```
+
+## Credits
+<img src="https://globalinitiative.net/wp-content/uploads/2019/08/GIN-Logo--1920x850.png" width="25%"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://942483.smushcdn.com/2505037/wp-content/uploads/2021/10/lens_horizontal-1-1536x376.png" width="25%"/> 
