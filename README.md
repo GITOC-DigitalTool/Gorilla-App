@@ -15,7 +15,8 @@
   </a>
 </p>
 
-Gorilla face detection and recognition using React Native.
+Gorilla face detection: a non-invasive, rapid, and robust method of automatic gorilla individual identification. Gorilla’s photos containing GPS information are stored in our local database and can be compared with those taken by any app-user around the world. ![Uploading image.png…]()
+
 
 ## 🚀 How to use
 
